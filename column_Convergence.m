@@ -8,7 +8,7 @@ addpath('functions')
 CI = material_info(1);   PC = plot_colors();
 
 %--------------------------------------------------------------------------
-% CATION
+% CATION!
 % The execution of this file takes a considerable amount of time:
 % Approx. 10-20 minuttes.
 

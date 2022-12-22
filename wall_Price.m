@@ -19,7 +19,7 @@ w_min = max(150, 2*(o_L_max+15+6));     w_max = 300;    %[mm]
 
 % Characteristic compressive strength of concrete
 % (16, 20, 25, 30 [F/R]  |  35, 40 [L/R])
-f_ck = 35;   EPD_c = 'c35R';   EPD_s = 'rp';
+f_ck = 16;   EPD_c = 'c16F';   EPD_s = 'rp';
 
 % Width of wall and spacing between longitunal reinforcement
 w = 3600;   s_L = 150;
@@ -35,25 +35,25 @@ printing = 1;
 
 % Points in intervals
 o_L = linspace(o_L_min, o_L_max, np);
-s = linspace(w_min, w_max, np);
+h = linspace(w_min, w_max, np);
 
 % Rreallocating arrays and starting counter
-ss = zeros(np, np);   oo=ss;   PP=ss;
+hh = zeros(np, np);   oo=hh;   PP=hh;
 
 % Loop for diameter of longitunal reinforcement
 for x = 1:size(o_L, 2)
 
     % Loop for side length
-    for y = 1:size(s, 2)
+    for y = 1:size(h, 2)
 
         % Definitions
-        M = def_w(f_ck, s(y), w, [o_L(x), o_L(x)], n_L, []);
+        M = def_w(f_ck, h(y), w, [o_L(x), o_L(x)], n_L, []);
 
         % Price
         PP(x,y) = calc_Price(0.5, M, EPD_c, EPD_s);
 
         % Storing result
-        ss(x,y) = s(y);   oo(x,y) = o_L(x);
+        hh(x,y) = h(y);   oo(x,y) = o_L(x);
 
     end
 
@@ -72,7 +72,7 @@ p1 = figure('Name', 'Price', 'PaperUnits', 'centimeters', ...
 figure(p1);   hold on
 
 % Plotting the price as a surface plot
-surf(ss, oo, PP ,"EdgeColor", "k", "EdgeAlpha", 0.5, ...
+surf(hh, oo, PP ,"EdgeColor", "k", "EdgeAlpha", 0.5, ...
     "HandleVisibility", "off");
 
 % Adding plot title
@@ -82,7 +82,7 @@ title('', ...
     MI.(EPD_s).rho));
 
 % Changing plot legends
-xlabel('Side length of cross section, {\it s} [mm]')
+xlabel('Thickness of wall, {\it h} [mm]')
 ylabel('Diameter of longitunal reinforcement, {\it o_L} [mm]')
 zlabel('price of wall, [DKK]')
 
@@ -102,7 +102,7 @@ p2 = figure('Name', 'Side length', 'PaperUnits', 'centimeters', ...
 figure(p2); hold on;
 
 % Plotting the results
-plot(ss(1,:)', PP(size(PP,2)/2, :)', "HandleVisibility", "off", ...
+plot(hh(1,:)', PP(size(PP,2)/2, :)', "HandleVisibility", "off", ...
     'Color', PC.gwp, 'Marker', '.', 'LineStyle', 'none', ...
     'MarkerSize', 10);
 
@@ -114,8 +114,8 @@ title('', ...
     MI.(EPD_s).rho));
 
 % Changing plot legends
-xlabel('Side length of cross section,{\it s} [mm]')
-ylabel('price of wall, [DKK]')
+xlabel('Thickness of wall,{\it h} [mm]')
+ylabel('Price of wall, [DKK]')
 
 % Changing plot position
 plot_position(p2, 'left');
@@ -145,14 +145,14 @@ plot(oo(:,1), PP(:, size(PP,2)/2), "HandleVisibility", "off", ...
 
 % Adding plot title
 title('', ...
-    sprintf(['(s = %.2f [mm], L = %.f [mm], w = %.f [mm] f_c_k = %.f, ' ...
+    sprintf(['(h = %.2f [mm], L = %.f [mm], w = %.f [mm] f_c_k = %.f, ' ...
     'rho_s = %.f [kg/m^3])'], ...
-    ss(1, size(PP,2)/2), M.L*10^3, M.w*10^3, M.f_ck*10^(-6), ...
+    hh(1, size(PP,2)/2), M.L*10^3, M.w*10^3, M.f_ck*10^(-6), ...
     MI.(EPD_s).rho));
 
 % Changing plot legends
 xlabel('Diameter of longitunal reinforcement, {\it o_L} [mm]')
-ylabel('price of wall, [DKK]')
+ylabel('Price of wall, [DKK]')
 
 % Changing plot position
 plot_position(p3, 'top_left');
@@ -174,6 +174,10 @@ path_folder = '.\results\Pricing\Wall';
 
 % Figure array of currently open figures
 fa = findall(groot, 'Type', 'Figure', '-not', 'Name', 'Input check');
+
+% Sortint the figure array
+[~, s_idx] = sort([fa.Number]);
+fa = fa(s_idx);
 
 % Number of figures
 number_figure = 1:size(fa ,1);

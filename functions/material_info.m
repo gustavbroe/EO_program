@@ -122,7 +122,6 @@ function MI = material_info(info_lev)
 
     % Steel products
 
-
     % GWP from 1 tonne of reinforcement products (Product EPD) + Density
     % (EPD International AB x Celsa Steel Service A/S)
     % {https://api.environdec.com/api/v1/EPDLibrary/Files/b8f8bd47-8c39-480b-3a09-08d98fadb225/Data}
@@ -143,6 +142,17 @@ function MI = material_info(info_lev)
     
         % Converting unit from [kg CO2-eq pr. ton] to [kg CO2-eq pr. m^3]
         MI.sr.GWP = MI.sr.GWP * MI.sr.rho;
+    
+    
+    % GWP from 1 metric tonne of Steel reinforcement products [Danish sites] (Product EPD) + Density
+    % (The International EPD® System x Lemvigh-Müller)
+    % {https://www.lemu.dk/da/service/information-og-dokumentation/miljoevaredeklarationer-epd}
+    MI.srp.GWP = 7.73e2 + 2.48e1;
+    %            A1-A3      A4   
+    MI.srp.rho = 7850;   %[kg/m^3]   {assumed, but likely accurate}
+    
+        % Converting unit from [kg CO2-eq pr. ton] to [kg CO2-eq pr. m^3]
+        MI.srp.GWP = MI.srp.GWP * 1/1000 * MI.srp.rho;
 
 
 
@@ -172,6 +182,7 @@ if info_lev == 1
         '\n'], MI.c40L.GWP)
     fprintf('%.2f / C40 with RAPID cement (c40R) \n', MI.c40R.GWP)
     fprintf('%.2f / Reinforcement products (rp) \n', MI.rp.GWP)
+    fprintf('%.2f / Steel reinforcement products (srp) \n', MI.srp.GWP)
     fprintf('%.2f / Steel rebar (sr) \n', MI.sr.GWP)
 
     % Footer

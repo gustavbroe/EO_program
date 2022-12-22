@@ -2,7 +2,7 @@
 clear; clc; close all;
 
 % Adding function folder to path
-addpath('functions', 'use')
+addpath('functions')
 
 % Loading materials information
 MI = material_info(1);
@@ -68,8 +68,8 @@ end
 UtiF = ApMoment./MomentCap;
 
 % Saving results to table
-SE01 = table(f_ck, ApMoment, MomentCap, UtiF, (UtiF-UtiF(end-1))/UtiF(end-1), ...
-    GWP, (GWP-GWP(end-1))./GWP(end-1), 'VariableNames', VarNames);
+SE01 = table(f_ck, ApMoment, MomentCap, UtiF, (UtiF(end-1)-UtiF)/UtiF(end-1)*100, ...
+    GWP, (GWP(end-1)-GWP)./GWP(end-1)*100, 'VariableNames', VarNames);
 
 % Transmission
 fprintf('\n')
@@ -118,8 +118,8 @@ end
 UtiF = ApMoment./MomentCap;
 
 % Saving results to table
-VES01 = table(f_ck, ApMoment, MomentCap, UtiF, (UtiF-UtiF(end-1))/UtiF(end-1), ...
-    GWP, (GWP-GWP(end-1))./GWP(end-1), 'VariableNames', VarNames);
+VES01 = table(f_ck, ApMoment, MomentCap, UtiF, (UtiF(end-1)-UtiF)/UtiF(end-1)*100, ...
+    GWP, (GWP(end-1)-GWP)./GWP(end-1)*100, 'VariableNames', VarNames);
 
 % Transmission
 fprintf('\n')

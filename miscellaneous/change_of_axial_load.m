@@ -38,13 +38,13 @@ for x = 1:size(N_Ed, 2)
     M = def_N(N_Ed(x), f_ck, h, w, o_L, n_L, []);
 
     % Geometrical imperfection
-    M.e_0 = M.L_0/400; %geo_imperfections(0, M);
+    M.e_0 = geo_imperfections(0, M);
     
     % First order bending moment
     M = bending_moment(0, M);
 
     % Effects of creep
-    M.varphi_ef = 0.80; %effective_creep(0, M);
+    M.varphi_ef = effective_creep(0, M);
 
     % Moment capacity
     [MM(x), rr(x)] = moment_capacity(0, M);
@@ -112,7 +112,7 @@ title('', ...
     , M.f_ck*10^(-6), h, M.L_0, (M.c+M.o_T)*10^(3) ));
 
 % Changing plot legends
-xlabel('Applied axial load,{\it N_Ed} [N]')
+xlabel('Applied axial load,{\it N_E_d} [N]')
 ylabel('Bending moment,{\it M} [Nm]')
 
 % Concluding plot
@@ -216,7 +216,7 @@ function M = def_N(N_Ed, f_ck, h, w, o_L, n_L, d_L)
 
 % COLUMN
     % Length
-    M.L = 3.0;                                 %[m]
+    M.L = 4.18;                                 %[m]
     %Effective length factor
     M.L_0 = 1*M.L;                              %[m]
 

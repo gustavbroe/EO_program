@@ -5,7 +5,7 @@ clear; clc; close all hidden;
 addpath('functions')
 
 % Loading climate information, plot colors, baseline results
-CI = material_info(1);   PC = plot_colors();   BL = baseline_line();
+CI = material_info(1);   PC = plot_colors();   BL = baseline();
 
 %--------------------------------------------------------------------------
 %% User-input
@@ -19,7 +19,7 @@ s_min = 200;   s_max = 350;
 s = s_min:0.1:s_max;                      %[mm]  
 
 % Diameter of longitunal reinforcement
-o_L = [16, 16];                     %[mm]
+o_L = [14.5, 14.5];                     %[mm]
 
 % Number of bars in each row
 n_L = [2, 2];

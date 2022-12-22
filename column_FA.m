@@ -4,8 +4,8 @@ clear; clc; close all hidden;
 % Adding function folder to path
 addpath('functions')
 
-% Loading climate information and plot colors
-MI = material_info(1);   PC = plot_colors();
+% Loading climate information, plot colors, and baseline values
+MI = material_info(1);   PC = plot_colors();   BL = baseline();
 
 %--------------------------------------------------------------------------
 %% User-input
@@ -28,13 +28,13 @@ s_min = max(200, 2*(o_L_max+20+6));     s_max = 350;    %[mm]
 show_planes = 0;
 
 % Printing of figures
-printing = 0;
+printing = 1;
 
 % Input control of lowest GWP solution?
 control_gwp = 1;
 
 % Consider pricing
-con_price = 0;
+con_price = 1;
 
     % Input control of cheapest column?
     control_price = 0;
@@ -306,28 +306,29 @@ for i = ii
 
     % Outputting the lowest possible GWP
     [row, col] = find(GG == min(GG(vr{i})));
-    fprintf('%s = %.2f [kg CO2-ep] / %.2f [DKK] ', tx{i}, ...
-        GG(row,col), PP(row,col));
+    fprintf('%s = %.2f [kg CO2-ep] / %.2f [DKK] / %.2f [%%] ', tx{i}, ...
+        GG(row,col), PP(row,col), ...
+        (BL.column.GWP - GG(row(end),col(end)))/BL.column.GWP*100);
     fprintf('| s = %.2f [mm] / o_L = %.2f [mm] \n', ...
         ss(row,col), oo(row,col));
 
     % Marking the point in price figure
     if con_price == 1
-    plot3(ss(row,col), oo(row,col), PP(row,col), "MarkerSize", 22, ... 
+    plot3(ss(row,col), oo(row,col), PP(row,col), "MarkerSize", 18, ... 
         "Marker", "o", "Color", PC.green, "LineStyle", "none", ...
-        "HandleVisibility","off");
+        "HandleVisibility", "off", 'LineWidth', 2);
     figure(p3); hold off;  
     end
     
     % Marking the point in GWP figure
     figure(p2); hold on; 
-    plot3(ss(row,col), oo(row,col), GG(row,col), "MarkerSize", 22, ... 
+    plot3(ss(row,col), oo(row,col), GG(row,col), "MarkerSize", 18, ... 
         "Marker", "o", "Color", PC.green, "LineStyle", "none", ...
-        "HandleVisibility","off");
+        "HandleVisibility","off", 'LineWidth', 2);
     figure(p2); hold off;   figure(p1); hold on; 
-    plot3(ss(row,col), oo(row,col), MM(row,col), "MarkerSize", 22, ...
+    plot3(ss(row,col), oo(row,col), MM(row,col), "MarkerSize", 18, ...
         "Marker", "o", "Color", PC.green, "LineStyle", "none", ...
-        "HandleVisibility","off");
+        "HandleVisibility","off", 'LineWidth', 2);
     figure(p1); hold off;   
     
     if con_price == 1
@@ -369,8 +370,9 @@ for i = ii
 
     % Outputting the lowest possible GWP
     [row, col] = find(PP == min(PP(vr{i})));
-    fprintf('%s = %.2f [DKK] / %.2f [kg CO2-eq] ', tx{i}, ...
-        PP(row(end),col(end)), GG(row(end),col(end)));
+    fprintf('%s = %.2f [DKK] / %.2f [kg CO2-eq] / %.2f [%%] ', tx{i}, ...
+        PP(row(end),col(end)), GG(row(end),col(end)), ...
+        (BL.column.GWP - GG(row(end),col(end)))/BL.column.GWP*100);
     fprintf('| s = %.2f [mm] / o_L = %.2f [mm] \n', ...
         ss(row(end),col(end)), oo(row(end),col(end)));
 
@@ -378,17 +380,17 @@ for i = ii
     plot3(ss(row(end),col(end)), oo(row(end),col(end)), ...
         PP(row(end),col(end)), "MarkerSize", 18, ... 
         "Marker", "o", "Color", PC.yellow, "LineStyle", "none", ...
-        "HandleVisibility","off");
+        "HandleVisibility","off", 'LineWidth', 2);
     figure(p3); hold off;   figure(p2); hold on; 
     plot3(ss(row(end),col(end)), oo(row(end),col(end)), ...
         GG(row(end),col(end)), "MarkerSize", 18, ... 
         "Marker", "o", "Color", PC.yellow, "LineStyle", "none", ...
-        "HandleVisibility","off");
+        "HandleVisibility","off", 'LineWidth', 2);
     figure(p2); hold off;   figure(p1); hold on; 
     plot3(ss(row(end),col(end)), oo(row(end),col(end)), ...
         MM(row(end),col(end)), "MarkerSize", 18, ...
         "Marker", "o", "Color", PC.yellow, "LineStyle", "none", ...
-        "HandleVisibility","off");
+        "HandleVisibility","off", 'LineWidth', 2);
     figure(p1); hold off;   figure(p3); hold on; 
 
 
@@ -401,7 +403,7 @@ for i = ii
             % Calling function
             fig_IC = input_control(0.03, def_c(f_ck, ...
                 ss(row(end),col(end)), ss(row(end),col(end)), ...
-                repmat(oo(row,col), 1, size(n_L, 2)), n_L, []));
+                repmat(oo(row(end),col(end)), 1, size(n_L, 2)), n_L, []));
 
             control_price = 0;
 
@@ -432,6 +434,10 @@ path_folder = '.\results\Column\Three_dimensional';
 
 % Figure array of currently open figures
 fa = findall(groot, 'Type', 'Figure', '-not', 'Name', 'Input Check: Column');
+
+% Sortint the figure array
+[~, s_idx] = sort([fa.Number]);
+fa = fa(s_idx);
 
 % Number of figures
 number_figure = 1:size(fa ,1);

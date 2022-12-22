@@ -19,7 +19,7 @@ s_min = max(150, 2*(o_L_max+15+6));     s_max = 300;    %[mm]
 
 % Characteristic compressive strength of concrete
 % (16, 20, 25, 30 [F/R]  |  35, 40 [L/R])
-f_ck = 35;   EPD_c = 'c35R';   EPD_s = 'rp';
+f_ck = 16;   EPD_c = 'c16F';   EPD_s = 'rp';
 
 % Number of longitunal reinforcement rows
 n_L = [2, 2];
@@ -164,10 +164,14 @@ hold off
 if printing == 1
 
 % Path to the results folder
-path_folder = '.\results\Column\Pricing';
+path_folder = '.\results\Pricing\Column';
 
 % Figure array of currently open figures
 fa = findall(groot, 'Type', 'Figure', '-not', 'Name', 'Input check');
+
+% Sortint the figure array
+[~, s_idx] = sort([fa.Number]);
+fa = fa(s_idx);
 
 % Number of figures
 number_figure = 1:size(fa ,1);
